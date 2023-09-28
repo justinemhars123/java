@@ -1,0 +1,161 @@
+import java.util.*;
+
+public class Linked_List {
+   
+   Scanner in = new Scanner (System.in);
+   
+   static class node {
+      int data;
+      node next;
+      node (int value) {
+         data = value;
+         next = null;
+      }
+   }
+   static node head;
+
+   // display the list
+   static void printList() {
+      node p = head;
+      System.out.print("\n[");
+
+      //start from the beginning
+      while(p != null) {
+         System.out.print(" " + p.data + " ");
+         p = p.next;
+      }
+      System.out.print("]");
+   }
+
+   //insertion at the beginning
+   static void insertatbegin(int data) {
+
+      //create a link
+      node lk = new node(data);;
+
+      // point it to old first node
+      lk.next = head;
+
+      //point first to new first node
+      head = lk;
+   }
+   static void insertatend(int data) {
+   
+      //create a link
+      node lk = new node(data);
+      node linkedlist = head;
+
+      // point it to old first node
+      while(linkedlist.next != null)
+         linkedlist = linkedlist.next;
+
+      //point first to new first node
+      linkedlist.next = lk;
+      }
+       static void deleteatbegin() {
+      head = head.next;
+   
+   }
+    static void insertafternode(node list, int data) {
+      node lk = new node(data);
+      lk.next = list.next;
+      list.next = lk;
+   }
+   static void deleteatend() {
+      node linkedlist = head;
+      while (linkedlist.next.next != null)
+         linkedlist = linkedlist.next;
+      linkedlist.next = null;
+   }
+   static void deletenode(int key) {
+      node temp = head;
+      node prev = null;
+      if (temp != null && temp.data == key) {
+         head = temp.next;
+         return;
+      }
+      
+      // Find the key to be deleted
+      while (temp != null && temp.data != key) {
+         prev = temp;
+         temp = temp.next;
+      }
+      
+      // If the key is not present
+      if (temp == null) return;
+      
+      // Remove the node
+      prev.next = temp.next;
+   }   public static void main(String args[]) {
+    Scanner in = new Scanner (System.in);
+
+      int k=0;
+      
+      System.out.println("Linked List: ");
+       
+
+      
+//       printList();
+      System.out.println("\n");
+      
+      while(true){
+      
+      System.out.println("\n Choose " +
+                          "\n 1. Insertion of an element at the beginnning of the list" +
+                          "\n 2. Insertion at the end of the list" +
+                          "\n 3. Insertion at the specified position of the list" + 
+                          "\n 4. deletion from the beginning of the list" + 
+                          "\n 5. deletion from the end of the list" +
+                          "\n 6. deletion from the specified position of the list" +
+                          "\n 7. Display the elements of the list" +
+                          "\n 0. Exit");
+                          
+      int choose = in.nextInt();
+      
+         switch(choose){
+            case 1:
+                  System.out.print("Enter number: ");
+                  int a = in.nextInt();
+                     insertatbegin(a);
+                  printList();
+               break;
+            case 2:
+                  System.out.print("Enter number: ");
+                  int b = in.nextInt();
+                    insertatend(b);
+                 printList();
+               break;
+            case 3:
+                  System.out.println("Enter number: ");
+                  int c = in.nextInt();
+                  insertafternode(head.next, c);
+                  printList();
+                  
+               break;
+            case 4:
+                  deleteatbegin();
+                  System.out.println("\n Deleted successfully");
+                  printList();
+               break;
+            case 5:
+                  deleteatend();
+                  System.out.println("\n Deleted successfully");
+                  printList();
+               break;
+            case 6: 
+                   System.out.print("Enter number: ");
+                  int f = in.nextInt();
+                       deletenode(f);
+                     printList();
+               break;
+            case 7:
+                   printList();
+                   System.out.println();
+               break;
+               
+             default:
+             
+               break;               
+            
+      }
+    }
