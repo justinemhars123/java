@@ -1,0 +1,95 @@
+mport java.util.Scanner;
+
+class SugarSmashPlayer {
+    private int playerId;
+    private String screenName;
+    private int[] highScores;
+
+    public SugarSmashPlayer(int playerId, String screenName) {
+        this.playerId = playerId;
+        this.screenName = screenName;
+        this.highScores = new int[10];
+    }
+
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public String getScreenName() {
+        return screenName;
+    }
+
+    public int getScore(int level) {
+        if (level >= 1 && level <= 10) {
+            return highScores[level - 1];
+        } else {
+            System.out.println("Error: Invalid level");
+            return -1;
+        }
+    }
+
+    public void setScore(int level, int score) {
+        if (level >= 1 && level <= 10) {
+            if (level == 1 || score >= 100) {
+                highScores[level - 1] = score;
+            } else {
+                System.out.println("Error: You need at least 100 points to set a score for this level.");
+            }
+        } else {
+            System.out.println("Error: Invalid level");
+        }
+    }
+}
+
+class PremiumSugarSmashPlayer extends SugarSmashPlayer {
+    public PremiumSugarSmashPlayer(int playerId, String screenName) {
+        super(playerId, screenName);
+    }
+}
+
+import java.util.*;
+public class DemoSugarSmash {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+
+        System.out.print("Enter the player ID: ");
+        int playerId = scan.nextInt();
+        scan.nextLine(); // Consume the newline character
+
+        System.out.print("Enter the player screen name: ");
+        String screenName = scan.nextLine();
+
+        SugarSmashPlayer player1 = new SugarSmashPlayer(playerId, screenName);
+        PremiumSugarSmashPlayer premiumPlayer = new PremiumSugarSmashPlayer(playerId + 1, screenName + "Premium");
+
+        System.out.println("Player: " + player1.getScreenName());
+        System.out.println("Premium Player: " + premiumPlayer.getScreenName());
+
+        System.out.println("Setting scores for Player:");
+        for (int i = 1; i <= 10; i++) {
+            System.out.print("Enter the score for level " + i + ": ");
+            int score = scan.nextInt();
+            player1.setScore(i, score);
+        }
+
+        System.out.println("Setting scores for Premium Player:");
+        for (int i = 1; i <= 10; i++) {
+            System.out.print("Enter the score for level " + i + ": ");
+            int score = scan.nextInt();
+            premiumPlayer.setScore(i, score);
+        }
+
+        System.out.println("Player 1's Scores:");
+        for (int i = 1; i <= 10; i++) {
+            System.out.println("Level " + i + ": " + player1.getScore(i));
+        }
+
+        System.out.println("Premium Player's Scores:");
+        for (int i = 1; i <= 10; i++) {
+            System.out.println("Level " + i + ": " + premiumPlayer.getScore(i));
+        }
+
+        scan.close();
+    }
+}
+
