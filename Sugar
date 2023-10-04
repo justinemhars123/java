@@ -1,0 +1,68 @@
+class SugarSmashPlayer {
+    private int playerId;
+    private String screenName;
+    private int[] highScores;
+
+    public SugarSmashPlayer(int playerId, String screenName) {
+        this.playerId = playerId;
+        this.screenName = screenName;
+        this.highScores = new int[10];
+    }
+
+    public int getPlayerId() {
+        return playerId;
+    }
+
+    public String getScreenName() {
+        return screenName;
+    }
+
+    public int getScore(int level) {
+        if (level >= 1 && level <= 10) {
+            return highScores[level - 1];
+        } else {
+            System.out.println("Error: Invalid level");
+            return -1;
+        }
+    }
+
+    public void setScore(int level, int score) {
+        if (level >= 1 && level <= 10) {
+            if (level == 1 || score >= 100) {
+                highScores[level - 1] = score;
+            } else {
+                System.out.println("Error: You need at least 100 points to set a score for this level.");
+            }
+        } else {
+            System.out.println("Error: Invalid level");
+        }
+    }
+}
+
+class PremiumSugarSmashPlayer extends SugarSmashPlayer {
+    public PremiumSugarSmashPlayer(int playerId, String screenName) {
+        super(playerId, screenName);
+    }
+}
+
+public class DemoSugarSmash {
+    public static void main(String[] args) {
+        // Create a regular SugarSmashPlayer
+        SugarSmashPlayer player1 = new SugarSmashPlayer(1, "Player1");
+
+        // Set and retrieve scores for a regular SugarSmashPlayer
+        player1.setScore(1, 120);
+        player1.setScore(2, 80); // Error: You need at least 100 points to set a score for this level.
+        System.out.println(player1.getScore(1)); // Output: 120
+        System.out.println(player1.getScore(2)); // Error: Invalid level
+
+        // Create a PremiumSugarSmashPlayer
+        PremiumSugarSmashPlayer premiumPlayer = new PremiumSugarSmashPlayer(2, "PremiumPlayer");
+
+        // Set and retrieve scores for a PremiumSugarSmashPlayer
+        premiumPlayer.setScore(1, 150);
+        premiumPlayer.setScore(2, 110);
+        System.out.println(premiumPlayer.getScore(1)); // Output: 150
+        System.out.println(premiumPlayer.getScore(2)); // Output: 110
+    }
+}
