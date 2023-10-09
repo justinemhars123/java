@@ -1,0 +1,111 @@
+import java.util.Scanner;
+
+class Stack {
+    private int maxSize;
+    private int[] stackArray;
+    private int top;
+
+    public Stack(int size) {
+        maxSize = size;
+        stackArray = new int[maxSize];
+        top = -1;
+    }
+
+    public void push(int value) {
+        if (top < maxSize - 1) {
+            stackArray[++top] = value;
+            System.out.println(value + " pushed onto the stack.");
+        } else {
+            System.out.println("Stack is full. Cannot push.");
+        }
+    }
+
+    public int pop() {
+        if (!isEmpty()) {
+            int value = stackArray[top--];
+            System.out.println(value + " popped from the stack.");
+            return value;
+        } else {
+            System.out.println("Stack is empty. Cannot pop.");
+            return -1;
+        }
+    }
+
+    public boolean isEmpty() {
+        return (top == -1);
+    }
+
+    public int peek() {
+        if (!isEmpty()) {
+            return stackArray[top];
+        } else {
+            System.out.println("Stack is empty.");
+            return -1;
+        }
+    }
+
+    public void printStack() {
+        if (!isEmpty()) {
+            System.out.println("Stack elements:");
+            for (int i = top; i >= 0; i--) {
+                System.out.println(stackArray[i]);
+            }
+        } else {
+            System.out.println("Stack is empty.");
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the size of the stack: ");
+        int size = scanner.nextInt();
+        Stack stack = new Stack(size);
+
+        while (true) {
+            System.out.println("\nMenu:");
+            System.out.println("1. Push");
+            System.out.println("2. Pop");
+            System.out.println("3. Check if stack is empty");
+            System.out.println("4. Get top element");
+            System.out.println("5. Print stack");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter value to push: ");
+                    int value = scanner.nextInt();
+                    stack.push(value);
+                    break;
+                case 2:
+                    stack.pop();
+                    break;
+                case 3:
+                    if (stack.isEmpty()) {
+                        System.out.println("Stack is empty.");
+                    } else {
+                        System.out.println("Stack is not empty.");
+                    }
+                    break;
+                case 4:
+                    int topValue = stack.peek();
+                    if (topValue != -1) {
+                        System.out.println("Top element: " + topValue);
+                    }
+                    break;
+                case 5:
+                    stack.printStack();
+                    break;
+                case 6:
+                    scanner.close();
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
