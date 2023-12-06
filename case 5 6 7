@@ -1,0 +1,44 @@
+// Find the height of the tree
+    private int height() {
+        return height(root);
+    }
+
+    private int height(TreeNode root) {
+        if (root == null) {
+            return 0;
+        } else {
+            int leftHeight = height(root.left);
+            int rightHeight = height(root.right);
+
+            return Math.max(leftHeight, rightHeight) + 1;
+        }
+    }
+
+    // Find the number of nodes in the tree
+    private int countNodes() {
+        return countNodes(root);
+    }
+
+    private int countNodes(TreeNode root) {
+        if (root == null) {
+            return 0;
+        } else {
+            return countNodes(root.left) + countNodes(root.right) + 1;
+        }
+    }
+
+    // Find the number of leaves in the tree
+    private int countLeaves() {
+        return countLeaves(root);
+    }
+
+    private int countLeaves(TreeNode root) {
+        if (root == null) {
+            return 0;
+        } else if (root.left == null && root.right == null) {
+            return 1;
+        } else {
+            return countLeaves(root.left) + countLeaves(root.right);
+        }
+    }
+
