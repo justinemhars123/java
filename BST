@@ -17,7 +17,23 @@ class BinarySearchTree {
     root = null;
   }
 
-  void insert(int key) {
+  public boolean isEmpty(){
+     return root == null;
+     
+  }
+Node search(Node root, int key) {
+        // Base Cases: root is null or key is present at root
+        if (root == null || root.key == key)
+            return root;
+ 
+        // Key is greater than root's key
+        if (root.key < key)
+            return search(root.right, key);
+ 
+        // Key is smaller than root's key
+        return search(root.left, key);
+    }
+      void insert(int key) {
     root = insertKey(root, key);
   }
 
@@ -37,23 +53,81 @@ class BinarySearchTree {
 
     return root;
   }
-   
-  public boolean isEmpty(){
-     return root == null;
-     
+  void deleteKey(int key) {
+    root = deleteRec(root, key);
   }
-Node search(Node root, int key) {
-        // Base Cases: root is null or key is present at root
-        if (root == null || root.key == key)
-            return root;
- 
-        // Key is greater than root's key
-        if (root.key < key)
-            return search(root.right, key);
- 
-        // Key is smaller than root's key
-        return search(root.left, key);
+
+  Node deleteRec(Node root, int key) {
+    // Return if the tree is empty
+    if (root == null)
+      return root;
+
+    // Find the node to be deleted
+    if (key < root.key)
+      root.left = deleteRec(root.left, key);
+    else if (key > root.key)
+      root.right = deleteRec(root.right, key);
+    else {
+      // If the node is with only one child or no child
+      if (root.left == null)
+        return root.right;
+      else if (root.right == null)
+        return root.left;
+
+      // If the node has two children
+      // Place the inorder successor in position of the node to be deleted
+      root.key = minValue(root.right);
+
+      // Delete the inorder successor
+      root.right = deleteRec(root.right, root.key);
     }
+
+    return root;
+  }
+   // Find the height of the tree
+    private int height() {
+        return height(root);
+    }
+
+    private int height(Node root) {
+        if (root == null) {
+            return 0;
+        } else {
+            int leftHeight = height(root.left);
+            int rightHeight = height(root.right);
+
+            return Math.max(leftHeight, rightHeight) + 1;
+        }
+    }
+   // Find the number of nodes in the tree
+    private int countNodes() {
+        return countNodes(root);
+    }
+
+    private int countNodes(Node root) {
+        if (root == null) {
+            return 0;
+        } else {
+            return countNodes(root.left) + countNodes(root.right) + 1;
+        }
+    }
+
+    // Find the number of leaves in the tree
+    private int countLeaves() {
+        return countLeaves(root);
+    }
+
+    private int countLeaves(Node root) {
+        if (root == null) {
+            return 0;
+        } else if (root.left == null && root.right == null) {
+            return 1;
+        } else {
+            return countLeaves(root.left) + countLeaves(root.right);
+        }
+    }
+
+
      
   void inorder() {
     inorderRec(root);
@@ -101,82 +175,6 @@ Node search(Node root, int key) {
     // traverse the root node
     System.out.print(root.key + " -> ");
   }
-
-  void deleteKey(int key) {
-    root = deleteRec(root, key);
-  }
-
-  Node deleteRec(Node root, int key) {
-    // Return if the tree is empty
-    if (root == null)
-      return root;
-
-    // Find the node to be deleted
-    if (key < root.key)
-      root.left = deleteRec(root.left, key);
-    else if (key > root.key)
-      root.right = deleteRec(root.right, key);
-    else {
-      // If the node is with only one child or no child
-      if (root.left == null)
-        return root.right;
-      else if (root.right == null)
-        return root.left;
-
-      // If the node has two children
-      // Place the inorder successor in position of the node to be deleted
-      root.key = minValue(root.right);
-
-      // Delete the inorder successor
-      root.right = deleteRec(root.right, root.key);
-    }
-
-    return root;
-  }
-  // Find the height of the tree
-    private int height() {
-        return height(root);
-    }
-
-    private int height(Node root) {
-        if (root == null) {
-            return 0;
-        } else {
-            int leftHeight = height(root.left);
-            int rightHeight = height(root.right);
-
-            return Math.max(leftHeight, rightHeight) + 1;
-        }
-    }
-
-    // Find the number of nodes in the tree
-    private int countNodes() {
-        return countNodes(root);
-    }
-
-    private int countNodes(Node root) {
-        if (root == null) {
-            return 0;
-        } else {
-            return countNodes(root.left) + countNodes(root.right) + 1;
-        }
-    }
-
-    // Find the number of leaves in the tree
-    private int countLeaves() {
-        return countLeaves(root);
-    }
-
-    private int countLeaves(Node root) {
-        if (root == null) {
-            return 0;
-        } else if (root.left == null && root.right == null) {
-            return 1;
-        } else {
-            return countLeaves(root.left) + countLeaves(root.right);
-        }
-    }
-
 
   // Find the inorder successor
   int minValue(Node root) {
@@ -227,17 +225,13 @@ Node search(Node root, int key) {
                 tree.deleteKey(deleteNode);
                 break;
            case 5:
-                System.out.print("\nHeight: ");
-                tree.height();
-                
+                System.out.print("\nHeight: " + tree.height());
                 break;
            case 6:
-                System.out.print("\nNumber of nodes: ");
-                tree.countNodes();
+                System.out.print("\nNumber of nodes: " +  tree.countNodes());
                 break; 
            case 7:
-                System.out.print("\nNumber of leaves: ");
-                tree.countLeaves();
+                System.out.print("\nNumber of leaves: " + tree.countLeaves());
                 break;
            case 8:
                         System.out.print("\nInOrder Traversal: ");
@@ -250,6 +244,8 @@ Node search(Node root, int key) {
                 break;  
                 
            default:
+                   System.out.print("Invalid input. Please try again");
+
         } 
     
   }
