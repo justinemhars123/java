@@ -59,9 +59,10 @@ Node search(Node root, int key) {
 
   Node deleteRec(Node root, int key) {
     // Return if the tree is empty
-    if (root == null)
+    if (root == null){
+    System.out.println("Not found, Nothing to delete.");
       return root;
-
+   }
     // Find the node to be deleted
     if (key < root.key)
       root.left = deleteRec(root.left, key);
@@ -199,6 +200,7 @@ Node search(Node root, int key) {
     System.out.println("6. Find the number of nodes in the binary search tree");
     System.out.println("7. Find the number of leaves in the binary search tree");
     System.out.println("8. Traverse the binary search tree");
+    System.out.print("Enter choice: ");
     int choice = in.nextInt();
     
     switch(choice){
@@ -214,15 +216,16 @@ Node search(Node root, int key) {
             System.out.println(k + " found");
                 break;
            case 3:
-                System.out.println("Enter node");
+                System.out.print("Enter node: ");
                 int insertNode = in.nextInt();
                 tree.insert(insertNode);
                 
                 break;
            case 4:
-                System.out.println("Enter node to delete");
+                System.out.print("Enter node to delete: ");
                 int deleteNode = in.nextInt();
                 tree.deleteKey(deleteNode);
+                System.out.print("Node " + deleteNode + " has deleted successfully\n");
                 break;
            case 5:
                 System.out.print("\nHeight: " + tree.height());
@@ -234,13 +237,18 @@ Node search(Node root, int key) {
                 System.out.print("\nNumber of leaves: " + tree.countLeaves());
                 break;
            case 8:
+                    if(tree.isEmpty()){
+                        System.out.print("Tree is empty\n");
+                     }else{   
                         System.out.print("\nInOrder Traversal: ");
                         tree.inorder();
                         System.out.print("\nPreOrder Traversal: ");
                         tree.preorder();
                         System.out.print("\nPostOrder Traversal: ");
                         tree.postorder();
-               
+                  
+                  } 
+                
                 break;  
                 
            default:
