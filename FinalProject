@@ -1,0 +1,341 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+public class BusinessApp extends JFrame {
+
+    private List<User> users = new ArrayList<>();
+    private List<Product> products = new ArrayList<>();
+    private User loggedInUser;
+
+    private JPanel registrationPanel;
+    private JPanel loginPanel;
+    private JPanel addProductPanel;
+    private JPanel transactionPanel;
+
+    private JTextField registrationUserIdField;
+    private JTextField registrationUserNameField;
+    private JPasswordField registrationPasswordField;
+
+    private JTextField loginUserNameField;
+    private JPasswordField loginPasswordField;
+
+    private JTextField productCodeField;
+    private JTextField descriptionField;
+    private JTextField priceField;
+    private JTextField quantityField;
+
+    private JTextField transactionIdField;
+    private JTextField customerIdField;
+    private JTextField totalPriceField;
+    private JComboBox<String> productCodeComboBox;
+
+    public BusinessApp() {
+        setTitle("Business App");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        initializeSampleData();
+
+        registrationPanel = createUserRegistrationPanel();
+        loginPanel = createLoginPanel();
+        addProductPanel = createAddProductPanel();
+        transactionPanel = createTransactionPanel();
+
+        add(registrationPanel);
+
+        pack();
+        setLocationRelativeTo(null); // Center the frame on the screen
+    }
+
+    private void initializeSampleData() {
+        // Adding sample users
+        users.add(new User("admin", "Admin User", "admin123"));
+
+        // Adding sample product codes
+        products.add(new Product("P001", "Laptop", 999.99, 10));
+        products.add(new Product("P002", "Smartphone", 499.99, 20));
+        products.add(new Product("P003", "Tablet", 299.99, 15));
+    }
+
+    private JPanel createUserRegistrationPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 2, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+
+        // Generate a random 6-digit user ID
+        Random random = new Random();
+        int randomUserId = 100000 + random.nextInt(900000);
+
+        registrationUserIdField = new JTextField(String.valueOf(randomUserId));
+        registrationUserNameField = new JTextField();
+        registrationPasswordField = new JPasswordField();
+        JButton registerButton = new JButton("Register");
+
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userId = registrationUserIdField.getText();
+                String userName = registrationUserNameField.getText();
+                String password = new String(registrationPasswordField.getPassword());
+                users.add(new User(userId, userName, password));
+                clearFields(registrationUserIdField, registrationUserNameField, registrationPasswordField);
+                JOptionPane.showMessageDialog(BusinessApp.this, "User registered successfully!");
+                switchToLoginPanel();
+            }
+        });
+
+        panel.add(new JLabel("User ID:"));
+        panel.add(registrationUserIdField);
+        panel.add(new JLabel("User Name:"));
+        panel.add(registrationUserNameField);
+        panel.add(new JLabel("Password:"));
+        panel.add(registrationPasswordField);
+        panel.add(new JLabel()); // Empty cell for spacing
+        panel.add(registerButton);
+
+        return panel;
+    }
+
+    private JPanel createLoginPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 2, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+
+        loginUserNameField = new JTextField();
+        loginPasswordField = new JPasswordField();
+        JButton loginButton = new JButton("Login");
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String enteredUserName = loginUserNameField.getText();
+                String enteredPassword = new String(loginPasswordField.getPassword());
+
+                for (User user : users) {
+                    if (user.getUserName().equals(enteredUserName) && user.getPassword().equals(enteredPassword)) {
+                        loggedInUser = user;
+                        JOptionPane.showMessageDialog(BusinessApp.this, "Login successful!");
+                        switchToAddProductPanel();
+                        break;
+                    }
+                }
+
+                if (loggedInUser == null) {
+                    JOptionPane.showMessageDialog(BusinessApp.this, "Invalid username or password. Please try again.");
+                    clearFields(loginUserNameField, loginPasswordField);
+                }
+            }
+        });
+
+        panel.add(new JLabel("Username:"));
+        panel.add(loginUserNameField);
+        panel.add(new JLabel("Password:"));
+        panel.add(loginPasswordField);
+        panel.add(new JLabel()); // Empty cell for spacing
+        panel.add(loginButton);
+
+        return panel;
+    }
+
+    private JPanel createAddProductPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(5, 2, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+
+        productCodeField = new JTextField();
+        descriptionField = new JTextField();
+        priceField = new JTextField();
+        quantityField = new JTextField();
+        JButton addButton = new JButton("Add Product");
+
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String productCode = productCodeField.getText();
+                String description = descriptionField.getText();
+                double price = Double.parseDouble(priceField.getText());
+                int quantity = Integer.parseInt(quantityField.getText());
+                products.add(new Product(productCode, description, price, quantity));
+                clearFields(productCodeField, descriptionField, priceField, quantityField);
+                updateProductCodeComboBox();
+                JOptionPane.showMessageDialog(BusinessApp.this, "Product added successfully!");
+                switchToTransactionPanel();
+            }
+        });
+
+        panel.add(new JLabel("Product Code:"));
+        panel.add(productCodeField);
+        panel.add(new JLabel("Description:"));
+        panel.add(descriptionField);
+        panel.add(new JLabel("Price:"));
+        panel.add(priceField);
+        panel.add(new JLabel("Quantity:"));
+        panel.add(quantityField);
+        panel.add(new JLabel()); // Empty cell for spacing
+        panel.add(addButton);
+
+        return panel;
+    }
+
+    private void updateProductCodeComboBox() {
+        productCodeComboBox.removeAllItems();
+        for (Product product : products) {
+            productCodeComboBox.addItem(product.getProductCode());
+        }
+    }
+
+    private JPanel createTransactionPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(7, 2, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+
+        transactionIdField = new JTextField();
+        customerIdField = new JTextField();
+        totalPriceField = new JTextField();
+        productCodeComboBox = new JComboBox<>();
+        updateProductCodeComboBox(); // Initial update with sample data
+        JButton buyButton = new JButton("Buy Product");
+
+        buyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String transactionId = transactionIdField.getText();
+                String customerId = customerIdField.getText();
+                String selectedProductCode = (String) productCodeComboBox.getSelectedItem();
+
+                // Find the selected product
+                Product selectedProduct = null;
+                for (Product product : products) {
+                    if (product.getProductCode().equals(selectedProductCode)) {
+                        selectedProduct = product;
+                        break;
+                    }
+                }
+
+                if (selectedProduct != null) {
+                    // Ask the user for the quantity
+                    int quantity = 0;
+                    try {
+                        quantity = Integer.parseInt(JOptionPane.showInputDialog(BusinessApp.this, "Enter Quantity:"));
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(BusinessApp.this, "Invalid quantity. Please enter a number.");
+                        return; // Abort the transaction
+                    }
+
+                    // Calculate total price based on the selected product and quantity
+                    double totalPrice = selectedProduct.getPrice() * quantity;
+                    totalPriceField.setText(String.valueOf(totalPrice));
+
+                    // Add your logic for handling the transaction here
+                    // You can update the product quantity, store transaction details, etc.
+                    JOptionPane.showMessageDialog(BusinessApp.this, "Transaction completed successfully!");
+                } else {
+                    JOptionPane.showMessageDialog(BusinessApp.this, "Please select a product.");
+                }
+            }
+        });
+
+        panel.add(new JLabel("Transaction ID:"));
+        panel.add(transactionIdField);
+        panel.add(new JLabel("Customer ID:"));
+        panel.add(customerIdField);
+        panel.add(new JLabel("Product Code:"));
+        panel.add(productCodeComboBox);
+        panel.add(new JLabel("Total Price:"));
+        panel.add(totalPriceField);
+        panel.add(new JLabel()); // Empty cell for spacing
+        panel.add(buyButton);
+
+        return panel;
+    }
+
+    private void switchToLoginPanel() {
+        remove(registrationPanel);
+        add(loginPanel);
+        revalidate();
+        repaint();
+    }
+
+    private void switchToAddProductPanel() {
+        remove(loginPanel);
+        add(addProductPanel);
+        revalidate();
+        repaint();
+    }
+
+    private void switchToTransactionPanel() {
+        remove(addProductPanel);
+        add(transactionPanel);
+        revalidate();
+        repaint();
+    }
+
+    private void clearFields(JTextField... fields) {
+        for (JTextField field : fields) {
+            field.setText("");
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new BusinessApp().setVisible(true);
+            }
+        });
+    }
+}
+
+class User {
+    private String id;
+    private String userName;
+    private String password;
+
+    public User(String id, String userName, String password) {
+        this.id = id;
+        this.userName = userName;
+        this.password = password;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    // Getters and setters
+}
+
+class Product {
+    private String productCode;
+    private String description;
+    private double price;
+    private int quantity;
+
+    public Product(String productCode, String description, double price, int quantity) {
+        this.productCode = productCode;
+        this.description = description;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    // Getters and setters
+}
