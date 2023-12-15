@@ -9,6 +9,7 @@ public class LoginSystemGUI {
     private static JPanel mainPanel;
     private static CardLayout cardLayout;
     private static HashMap<String, String> users = new HashMap<>();
+    private static int userIdCounter = 1; // To generate user IDs
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -25,9 +26,10 @@ public class LoginSystemGUI {
 
         createLoginPanel();
         createRegisterPanel();
+        createProductPanel(); // Adding the provided ZingerRiceWrapSystem code
 
         mainFrame.add(mainPanel);
-        mainFrame.setSize(350, 200); // Set initial frame size
+        mainFrame.setSize(500, 250); // Set initial frame size
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
     }
@@ -54,6 +56,7 @@ public class LoginSystemGUI {
 
                 if (users.containsKey(username) && users.get(username).equals(password)) {
                     JOptionPane.showMessageDialog(mainFrame, "Login successful!");
+                    cardLayout.show(mainPanel, "ProductPanel"); // Show Product/Service panel after successful login
                 } else {
                     JOptionPane.showMessageDialog(mainFrame, "Invalid username/password combination.");
                 }
@@ -78,10 +81,13 @@ public class LoginSystemGUI {
     }
 
     private static void createRegisterPanel() {
-        JPanel registerPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+        JPanel registerPanel = new JPanel(new GridLayout(6, 2, 10, 10));
         registerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         Font labelFont = new Font("Arial", Font.BOLD, 14);
 
+        JLabel idLabel = new JLabel("ID:");
+        idLabel.setFont(labelFont);
+        JTextField idField = new JTextField();
         JLabel usernameLabel = new JLabel("Username:");
         usernameLabel.setFont(labelFont);
         JTextField usernameField = new JTextField();
@@ -97,9 +103,15 @@ public class LoginSystemGUI {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String id = idField.getText();
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
                 String confirmPassword = new String(confirmPasswordField.getPassword());
+
+                if (id.trim().isEmpty() || username.trim().isEmpty() || password.trim().isEmpty() || confirmPassword.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(mainFrame, "Please fill in all fields.");
+                    return;
+                }
 
                 if (users.containsKey(username)) {
                     JOptionPane.showMessageDialog(mainFrame, "Username already exists. Please choose a different one.");
@@ -120,6 +132,8 @@ public class LoginSystemGUI {
             }
         });
 
+        registerPanel.add(idLabel);
+        registerPanel.add(idField);
         registerPanel.add(usernameLabel);
         registerPanel.add(usernameField);
         registerPanel.add(passwordLabel);
@@ -130,5 +144,58 @@ public class LoginSystemGUI {
         registerPanel.add(goToLoginButton);
 
         mainPanel.add(registerPanel, "Register");
+    }
+
+    private static void createProductPanel() {
+        JPanel productPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+        productPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        Font labelFont = new Font("Arial", Font.BOLD, 14);
+
+        JLabel productCodeLabel = new JLabel("Product Code:");
+        productCodeLabel.setFont(labelFont);
+        JTextField productCodeField = new JTextField();
+        JLabel descriptionLabel = new JLabel("Description:");
+        descriptionLabel.setFont(labelFont);
+        JTextField descriptionField = new JTextField();
+        JLabel priceLabel = new JLabel("Price:");
+        priceLabel.setFont(labelFont);
+        JTextField priceField = new JTextField();
+        JLabel quantityLabel = new JLabel("Quantity:");
+        quantityLabel.setFont(labelFont);
+        JTextField quantityField = new JTextField();
+
+        JButton addProductButton = new JButton("Add Product");
+
+        addProductButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Retrieve the entered product information
+                String productCode = productCodeField.getText().trim();
+                String description = descriptionField.getText().trim();
+                String price = priceField.getText().trim();
+                String quantity = quantityField.getText().trim();
+
+                // Validate and process the entered information as needed
+                // For now, let's display the gathered information
+                String productInfo = "Product Code: " + productCode + "\n"
+                        + "Description: " + description + "\n"
+                        + "Price: " + price + "\n"
+                        + "Quantity: " + quantity;
+                JOptionPane.showMessageDialog(mainFrame, productInfo);
+            }
+        });
+
+        productPanel.add(productCodeLabel);
+        productPanel.add(productCodeField);
+        productPanel.add(descriptionLabel);
+        productPanel.add(descriptionField);
+        productPanel.add(priceLabel);
+        productPanel.add(priceField);
+        productPanel.add(quantityLabel);
+        productPanel.add(quantityField);
+        productPanel.add(new JLabel()); // Placeholder for alignment
+        productPanel.add(addProductButton);
+
+        mainPanel.add(productPanel, "ProductPanel");
     }
 }
