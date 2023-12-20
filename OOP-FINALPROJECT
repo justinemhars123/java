@@ -2,14 +2,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.table.DefaultTableModel;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import javax.swing.border.EmptyBorder;
+import java.awt.Color;
+import java.util.Random;
 
-public class LoginSystemGUI {
+
+
+public class SystemGUI {
     private static JFrame mainFrame;
     private static JPanel mainPanel;
     private static CardLayout cardLayout;
+
     private static HashMap<String, String> users = new HashMap<>();
-    private static int userIdCounter = 1; // To generate user IDs
+    private static int userIdCounter = 1;
+
+    private static JTable inventoryTable;
+    private static JComboBox<String> productComboBox;
+    private static JScrollPane scrollPane;
+
+    private static List<String> productCodes = new ArrayList<>();
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -23,30 +38,42 @@ public class LoginSystemGUI {
         mainPanel = new JPanel();
         cardLayout = new CardLayout();
         mainPanel.setLayout(cardLayout);
-
+       
         createLoginPanel();
         createRegisterPanel();
-        createProductPanel(); // Adding the provided ZingerRiceWrapSystem code
+        createInventoryPanel();
+        createTransactionPanel(productCodes);
+
+
+        cardLayout.show(mainPanel, "Login"); // Show login panel first
 
         mainFrame.add(mainPanel);
-        mainFrame.setSize(500, 250); // Set initial frame size
+        mainFrame.setSize(700, 400);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
     }
 
     private static void createLoginPanel() {
-        JPanel loginPanel = new JPanel(new GridLayout(4, 2, 10, 10));
-        loginPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        Font labelFont = new Font("Arial", Font.BOLD, 14);
-
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameLabel.setFont(labelFont);
-        JTextField usernameField = new JTextField();
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setFont(labelFont);
-        JPasswordField passwordField = new JPasswordField();
-        JButton loginButton = new JButton("Login");
-        JButton goToRegisterButton = new JButton("Register");
+      JPanel loginPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+     loginPanel.setBorder(BorderFactory.createEmptyBorder(50, 100, 50, 100)); // Increased padding for better spacing
+      loginPanel.setBackground(new Color(204, 255, 204)); // Light gray background
+      
+      
+     
+      JLabel usernameLabel = new JLabel("Username:");
+      JTextField usernameField = new JTextField();
+      JLabel passwordLabel = new JLabel("Password:");
+      JPasswordField passwordField = new JPasswordField();
+      JButton loginButton = new JButton("Login");
+      JButton goToRegisterButton = new JButton("Register");
+      
+      Font boldFont = new Font("Arial", Font.BOLD, 14);
+    usernameLabel.setFont(boldFont);
+    passwordLabel.setFont(boldFont);
+    loginButton.setBackground(new Color(30, 144, 255)); // Royal blue
+    loginButton.setForeground(Color.WHITE);
+    goToRegisterButton.setBackground(new Color(135, 206, 250)); // Light blue
+    goToRegisterButton.setForeground(Color.BLACK);
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -56,7 +83,8 @@ public class LoginSystemGUI {
 
                 if (users.containsKey(username) && users.get(username).equals(password)) {
                     JOptionPane.showMessageDialog(mainFrame, "Login successful!");
-                    cardLayout.show(mainPanel, "ProductPanel"); // Show Product/Service panel after successful login
+                    cardLayout.show(mainPanel, "Inventory");
+                    mainFrame.setTitle("Inventory");
                 } else {
                     JOptionPane.showMessageDialog(mainFrame, "Invalid username/password combination.");
                 }
@@ -67,38 +95,56 @@ public class LoginSystemGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(mainPanel, "Register");
+                mainFrame.setTitle("User Registration");
             }
         });
+     
+    
 
-        loginPanel.add(usernameLabel);
-        loginPanel.add(usernameField);
-        loginPanel.add(passwordLabel);
-        loginPanel.add(passwordField);
-        loginPanel.add(loginButton);
-        loginPanel.add(goToRegisterButton);
+    loginPanel.add(usernameLabel);
+    loginPanel.add(usernameField);
+    loginPanel.add(passwordLabel);
+    loginPanel.add(passwordField);
+    loginPanel.add(loginButton);
+    loginPanel.add(goToRegisterButton);
 
+        
+        
+        mainFrame.setTitle("Login");
         mainPanel.add(loginPanel, "Login");
+    
     }
 
     private static void createRegisterPanel() {
-        JPanel registerPanel = new JPanel(new GridLayout(6, 2, 10, 10));
-        registerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        Font labelFont = new Font("Arial", Font.BOLD, 14);
+        JPanel registerPanel = new JPanel(new BorderLayout());
+    JPanel formPanel = new JPanel(new GridLayout(6, 2, 10, 10));
+    formPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50)); // Padding adjustments
+    registerPanel.setBackground(new Color(204, 255, 204));
 
+    JLabel titleLabel = new JLabel("USER REGISTRATION");
+    titleLabel.setFont(new Font("Consolas", Font.BOLD, 24));
+    titleLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center the label horizontally
+    
         JLabel idLabel = new JLabel("ID:");
-        idLabel.setFont(labelFont);
-        JTextField idField = new JTextField();
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameLabel.setFont(labelFont);
-        JTextField usernameField = new JTextField();
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setFont(labelFont);
-        JPasswordField passwordField = new JPasswordField();
-        JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
-        confirmPasswordLabel.setFont(labelFont);
-        JPasswordField confirmPasswordField = new JPasswordField();
-        JButton registerButton = new JButton("Register");
-        JButton goToLoginButton = new JButton("Login");
+    JTextField idField = new JTextField();
+    idField.setPreferredSize(new Dimension(200, 30)); // Set preferred size for text fields
+    JLabel usernameLabel = new JLabel("Username:");
+    JTextField usernameField = new JTextField();
+    JLabel passwordLabel = new JLabel("Password:");
+    JPasswordField passwordField = new JPasswordField();
+    JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
+    JPasswordField confirmPasswordField = new JPasswordField();
+    JButton registerButton = new JButton("Register");
+    JButton goToLoginButton = new JButton("Login");
+    goToLoginButton.setForeground(Color.BLUE); // Change login button color
+    
+    Font boldFont = new Font("Arial", Font.BOLD, 14);
+    idLabel.setFont(boldFont);
+    usernameLabel.setFont(boldFont);
+    passwordLabel.setFont(boldFont);
+    confirmPasswordLabel.setFont(boldFont);
+    registerButton.setBackground(Color.GREEN);
+    registerButton.setForeground(Color.WHITE);
 
         registerButton.addActionListener(new ActionListener() {
             @Override
@@ -121,6 +167,7 @@ public class LoginSystemGUI {
                     users.put(username, password);
                     JOptionPane.showMessageDialog(mainFrame, "Registration successful!");
                     cardLayout.show(mainPanel, "Login");
+                    mainFrame.setTitle("Login");
                 }
             }
         });
@@ -129,73 +176,258 @@ public class LoginSystemGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(mainPanel, "Login");
+                mainFrame.setTitle("Login");
             }
         });
 
-        registerPanel.add(idLabel);
-        registerPanel.add(idField);
-        registerPanel.add(usernameLabel);
-        registerPanel.add(usernameField);
-        registerPanel.add(passwordLabel);
-        registerPanel.add(passwordField);
-        registerPanel.add(confirmPasswordLabel);
-        registerPanel.add(confirmPasswordField);
-        registerPanel.add(registerButton);
-        registerPanel.add(goToLoginButton);
-
+        formPanel.add(idLabel);
+    formPanel.add(idField);
+    formPanel.add(usernameLabel);
+    formPanel.add(usernameField);
+    formPanel.add(passwordLabel);
+    formPanel.add(passwordField);
+    formPanel.add(confirmPasswordLabel);
+    formPanel.add(confirmPasswordField);
+    formPanel.add(registerButton);
+    formPanel.add(goToLoginButton);
+    
+      registerPanel.add(titleLabel, BorderLayout.NORTH);
+    registerPanel.add(formPanel, BorderLayout.CENTER);
+    
         mainPanel.add(registerPanel, "Register");
     }
 
-    private static void createProductPanel() {
-        JPanel productPanel = new JPanel(new GridLayout(5, 2, 10, 10));
-        productPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        Font labelFont = new Font("Arial", Font.BOLD, 14);
+ private static void createInventoryPanel() {
+        JPanel inventoryPanel = new JPanel(new BorderLayout());
+        inventoryPanel.setLayout(new BoxLayout(inventoryPanel, BoxLayout.Y_AXIS));
+        inventoryPanel.setBackground(new Color(204, 255, 204));
+        
+          JLabel titleLabel = new JLabel("SARI-SARI GOODS");
+    titleLabel.setFont(new Font("MS Gothic", Font.BOLD, 24));
+    titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center the label horizontally
 
+      
+        JPanel addProductPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+        addProductPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        addProductPanel.setBackground(new Color(204, 255, 204));
+
+      
         JLabel productCodeLabel = new JLabel("Product Code:");
-        productCodeLabel.setFont(labelFont);
         JTextField productCodeField = new JTextField();
         JLabel descriptionLabel = new JLabel("Description:");
-        descriptionLabel.setFont(labelFont);
         JTextField descriptionField = new JTextField();
         JLabel priceLabel = new JLabel("Price:");
-        priceLabel.setFont(labelFont);
         JTextField priceField = new JTextField();
         JLabel quantityLabel = new JLabel("Quantity:");
-        quantityLabel.setFont(labelFont);
         JTextField quantityField = new JTextField();
+         
+         inventoryPanel.add(titleLabel);
+        addProductPanel.add(productCodeLabel);
+        addProductPanel.add(productCodeField);
+        addProductPanel.add(descriptionLabel);
+        addProductPanel.add(descriptionField);
+        addProductPanel.add(priceLabel);
+        addProductPanel.add(priceField);
+        addProductPanel.add(quantityLabel);
+        addProductPanel.add(quantityField);
 
-        JButton addProductButton = new JButton("Add Product");
+        JButton addProductButton = new JButton("Add Product/Service");
+        
+
+        String[] columnNames = {"Product Code", "Description", "Price", "Quantity"};
+        DefaultTableModel model = new DefaultTableModel(0, 4);
+        model.setColumnIdentifiers(columnNames);
+        inventoryTable = new JTable(model);
+        scrollPane = new JScrollPane(inventoryTable);
+        scrollPane.setPreferredSize(new Dimension(500, 200));
+        inventoryTable.setPreferredScrollableViewportSize(new Dimension(480, 200));
 
         addProductButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Retrieve the entered product information
                 String productCode = productCodeField.getText().trim();
                 String description = descriptionField.getText().trim();
                 String price = priceField.getText().trim();
                 String quantity = quantityField.getText().trim();
 
-                // Validate and process the entered information as needed
-                // For now, let's display the gathered information
-                String productInfo = "Product Code: " + productCode + "\n"
-                        + "Description: " + description + "\n"
-                        + "Price: " + price + "\n"
-                        + "Quantity: " + quantity;
-                JOptionPane.showMessageDialog(mainFrame, productInfo);
+                if (productCode.isEmpty() || description.isEmpty() || price.isEmpty() || quantity.isEmpty()) {
+                    JOptionPane.showMessageDialog(mainFrame, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Add data to the table with the dollar sign added to the price
+                model.addRow(new Object[]{productCode, description, "$" + price, quantity});
+
+                productCodes.add(productCode);
+
+                DefaultComboBoxModel<String> comboBoxModel = (DefaultComboBoxModel<String>) productComboBox.getModel();
+                comboBoxModel.addElement(productCode);
+
+                // Clear fields after adding
+                productCodeField.setText("");
+                descriptionField.setText("");
+                priceField.setText("");
+                quantityField.setText("");
             }
         });
 
-        productPanel.add(productCodeLabel);
-        productPanel.add(productCodeField);
-        productPanel.add(descriptionLabel);
-        productPanel.add(descriptionField);
-        productPanel.add(priceLabel);
-        productPanel.add(priceField);
-        productPanel.add(quantityLabel);
-        productPanel.add(quantityField);
-        productPanel.add(new JLabel()); // Placeholder for alignment
-        productPanel.add(addProductButton);
+        JButton proceedToTransactionButton = new JButton("Proceed to Transaction");
+        JButton logoutButton = new JButton("Logout");
+        proceedToTransactionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(mainPanel, "Transaction");
+            }
+        });
 
-        mainPanel.add(productPanel, "ProductPanel");
+
+        logoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(mainPanel, "Login");
+                mainFrame.setTitle("Login");
+            }
+        });
+         addProductButton.setBackground(Color.GREEN);
+    proceedToTransactionButton.setBackground(Color.GREEN);
+    logoutButton.setBackground(Color.RED);
+
+        
+             JPanel buttonPanel = new JPanel();
+    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
+    buttonPanel.add(proceedToTransactionButton);
+    buttonPanel.add(logoutButton);
+        
+        inventoryPanel.add(addProductPanel, BorderLayout.NORTH);
+        inventoryPanel.add(addProductButton, BorderLayout.CENTER);
+        inventoryPanel.add(scrollPane, BorderLayout.SOUTH);
+        inventoryPanel.add(proceedToTransactionButton, BorderLayout.SOUTH);
+        inventoryPanel.add(logoutButton, BorderLayout.NORTH);
+        
+
+        mainPanel.add(inventoryPanel, "Inventory");
+    }
+        
+   
+
+// Transaction panel
+public static void createTransactionPanel(List<String> productCodes) {
+    JPanel transactionPanel = new JPanel(new GridLayout(5, 2, 10, 10));
+    transactionPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    transactionPanel.setBackground(new Color(204, 255, 204));
+
+    // Randomize Transaction ID and Customer ID
+    Random random = new Random();
+    int transactionId = random.nextInt(100) + 1; // Random number between 1 and 100
+    int customerId = random.nextInt(100) + 1; // Random number between 1 and 100
+
+    JLabel transactionIdLabel = new JLabel("Transaction ID:");
+    JTextField transactionIdField = new JTextField(String.valueOf(transactionId)); // Set the random value
+    transactionIdField.setEditable(false);
+    JLabel customerIdLabel = new JLabel("Customer ID:");
+    JTextField customerIdField = new JTextField(String.valueOf(customerId)); // Set the random value
+    customerIdField.setEditable(false);
+    JLabel productCodeLabel = new JLabel("Product Code:");
+    productComboBox = new JComboBox<>(productCodes.toArray(new String[0]));
+    JLabel totalPriceLabel = new JLabel("Total Price:");
+    JTextField totalPriceField = new JTextField(20);
+    totalPriceField.setEditable(false);
+
+        // Listener for the productComboBox
+        productComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String selectedProductCode = (String) productComboBox.getSelectedItem();
+
+                 int selectedRow = getSelectedRowByProductCode(selectedProductCode);
+                if (selectedRow != -1) {
+                     int quantity = Integer.parseInt((String) inventoryTable.getValueAt(selectedRow, 3));
+                     double price = extractPrice((String) inventoryTable.getValueAt(selectedRow, 2));
+ 
+                     double totalPrice = quantity * price;
+
+                    // Set total price in the totalPriceField with the dollar sign
+                    totalPriceField.setText(formatPrice(totalPrice));
+                }
+            }
+        });
+//jbutton to confirm transaction
+        JButton confirmTransactionButton = new JButton("Confirm Transaction");
+        confirmTransactionButton.setPreferredSize(new Dimension(200, 30));
+        confirmTransactionButton.setBackground(Color.GREEN);
+        confirmTransactionButton.setForeground(Color.BLACK);
+        confirmTransactionButton.setFocusPainted(false);
+        confirmTransactionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String transactionId = transactionIdField.getText();
+                String customerId = customerIdField.getText();
+
+                if (transactionId.isEmpty() || customerId.isEmpty()) {
+                    JOptionPane.showMessageDialog(mainFrame, "Please fill in Transaction ID and Customer ID.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                String selectedProductCode = (String) productComboBox.getSelectedItem();
+                int selectedRow = getSelectedRowByProductCode(selectedProductCode);
+
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(mainFrame, "Please select a valid product.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                int quantity = Integer.parseInt((String) inventoryTable.getValueAt(selectedRow, 3));
+                double price = extractPrice((String) inventoryTable.getValueAt(selectedRow, 2));
+
+                double totalPrice = quantity * price;
+
+                StringBuilder receipt = new StringBuilder();
+                receipt.append("Transaction ID: ").append(transactionId).append("\n");
+                receipt.append("Customer ID: ").append(customerId).append("\n");
+                receipt.append("Product Code: ").append(selectedProductCode).append("\n");
+                receipt.append("Price per unit: ").append(formatPrice(price)).append("\n");
+                receipt.append("Quantity: ").append(quantity).append("\n");
+                receipt.append("Total Price: ").append(formatPrice(totalPrice)).append("\n");
+
+                int confirm = JOptionPane.showConfirmDialog(mainFrame, receipt.toString(), "Confirm Transaction", JOptionPane.OK_CANCEL_OPTION);
+                if (confirm == JOptionPane.OK_OPTION) {
+                    JOptionPane.showMessageDialog(mainFrame, "Transaction confirmed!");
+                    transactionIdField.setText("");
+                    customerIdField.setText("");
+                    totalPriceField.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(mainFrame, "Transaction canceled.");
+                }
+            }
+        });
+
+        
+    transactionPanel.add(transactionIdLabel);
+    transactionPanel.add(transactionIdField);
+    transactionPanel.add(customerIdLabel);
+    transactionPanel.add(customerIdField);
+    transactionPanel.add(productCodeLabel);
+    transactionPanel.add(productComboBox);
+    transactionPanel.add(totalPriceLabel);
+    transactionPanel.add(totalPriceField);
+    transactionPanel.add(confirmTransactionButton);
+
+    mainPanel.add(transactionPanel, "Transaction");
+}
+    private static int getSelectedRowByProductCode(String productCode) {
+        for (int i = 0; i < inventoryTable.getRowCount(); i++) {
+            if (productCode.equals(inventoryTable.getValueAt(i, 0))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static double extractPrice(String priceString) {
+        return Double.parseDouble(priceString.replaceAll("[^\\d.]", ""));
+    }
+
+    private static String formatPrice(double price) {
+        return String.format("$%.2f", price);
     }
 }
