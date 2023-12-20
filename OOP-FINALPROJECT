@@ -318,8 +318,8 @@ public static void createTransactionPanel(List<String> productCodes) {
 
     // Randomize Transaction ID and Customer ID
     Random random = new Random();
-    int transactionId = random.nextInt(100) + 1; // Random number between 1 and 100
-    int customerId = random.nextInt(100) + 1; // Random number between 1 and 100
+    int transactionId = random.nextInt(1000) + 1; // Random number between 1 and 1000
+    int customerId = random.nextInt(1000) + 1; // Random number between 1 and 1000
 
     JLabel transactionIdLabel = new JLabel("Transaction ID:");
     JTextField transactionIdField = new JTextField(String.valueOf(transactionId)); // Set the random value
